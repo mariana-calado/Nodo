@@ -1,34 +1,40 @@
 package br.dia23.nodo.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import br.dia23.nodo.R
 
-// Set of Material typography styles to start with
+/**
+ * Montserrat, empacotada em res/font (licença SIL OFL, ver licenses/Montserrat-OFL.txt).
+ * Cada arquivo é um peso; o Compose escolhe o arquivo certo pelo fontWeight do texto.
+ * Pesos sem arquivo (ex.: Light) usam o mais próximo disponível.
+ */
+val Montserrat = FontFamily(
+    Font(R.font.montserrat_regular, FontWeight.Normal),
+    Font(R.font.montserrat_medium, FontWeight.Medium),
+    Font(R.font.montserrat_semibold, FontWeight.SemiBold),
+    Font(R.font.montserrat_bold, FontWeight.Bold),
+)
+
+// Estilos padrão do Material 3 (tamanhos, pesos, espaçamentos); só trocamos a família da fonte.
+private val defaults = Typography()
+
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    displayLarge = defaults.displayLarge.copy(fontFamily = Montserrat),
+    displayMedium = defaults.displayMedium.copy(fontFamily = Montserrat),
+    displaySmall = defaults.displaySmall.copy(fontFamily = Montserrat),
+    headlineLarge = defaults.headlineLarge.copy(fontFamily = Montserrat),
+    headlineMedium = defaults.headlineMedium.copy(fontFamily = Montserrat),
+    headlineSmall = defaults.headlineSmall.copy(fontFamily = Montserrat),
+    titleLarge = defaults.titleLarge.copy(fontFamily = Montserrat),
+    titleMedium = defaults.titleMedium.copy(fontFamily = Montserrat),
+    titleSmall = defaults.titleSmall.copy(fontFamily = Montserrat),
+    bodyLarge = defaults.bodyLarge.copy(fontFamily = Montserrat),
+    bodyMedium = defaults.bodyMedium.copy(fontFamily = Montserrat),
+    bodySmall = defaults.bodySmall.copy(fontFamily = Montserrat),
+    labelLarge = defaults.labelLarge.copy(fontFamily = Montserrat),
+    labelMedium = defaults.labelMedium.copy(fontFamily = Montserrat),
+    labelSmall = defaults.labelSmall.copy(fontFamily = Montserrat),
 )
