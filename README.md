@@ -12,6 +12,7 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
 
 - [ ] Fase 1 — Flashcards (decks, cartas, modo estudo, SM-2)
   - [x] Modelagem Room: `Deck` e `Card`
+  - [x] Tela de decks: criar, listar, editar e excluir (MVVM + Hilt + Navigation)
 - [ ] Fase 2 — Pomodoro + estatísticas
 - [ ] Fase 3 — Planner e lembretes
 - [ ] Fase 4 — Modo quiz
@@ -23,3 +24,5 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
 - Entidades do Room usam `id` UUID (String) e `updatedAt`, para sincronizar com o Firestore sem conflito de chaves.
 - Exclusão lógica (`isDeleted`) em vez de `DELETE`, para que a exclusão também seja sincronizada.
 - Um pacote por funcionalidade (`feature/flashcards`, ...) e código compartilhado em `core/`.
+- MVVM com fluxo unidirecional: a tela desenha um `UiState` (StateFlow) e só envia eventos ao ViewModel.
+- Injeção de dependências com Hilt; o Repository é a única porta de entrada para os dados.
