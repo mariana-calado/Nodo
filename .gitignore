@@ -1,0 +1,11 @@
+*.iml
+.gradle
+/local.properties
+# Configurações do Android Studio desta máquina (não fazem parte do projeto)
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
