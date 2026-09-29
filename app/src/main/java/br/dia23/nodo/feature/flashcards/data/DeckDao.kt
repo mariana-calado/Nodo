@@ -24,16 +24,19 @@ abstract class DeckDao {
     /**
      * Decks com contagem de cartas, calculada no próprio SQL (subqueries) para não
      * precisarmos carregar todas as cartas só para contar.
-     * `now` define o que é "devida". Ele é fixo enquanto o Flow está ativo: a contagem de devidas
-     * só se atualiza quando a tabela muda ou a tela é reaberta (suficiente por enquanto).
+     * Uma carta conta como "para revisar" se `dueAt <= dueUntil` (o repositório passa o fim do dia de hoje).
      */
     @Query(
         "SELECT d.*, " +
             "(SELECT COUNT(*) FROM cards c WHERE c.deckId = d.id AND c.isDeleted = 0) AS cardCount, " +
-            "(SELECT COUNT(*) FROM cards c WHERE c.deckId = d.id AND c.isDeleted = 0 AND c.dueAt <= :now) AS dueCount " +
+            "(SELECT COUNT(*) FROM cards c WHERE c.deckId = d.id AND c.isDeleted = 0 AND c.dueAt <= :dueUntil) AS dueCount " +
             "FROM decks d WHERE d.isDeleted = 0 ORDER BY d.name COLLATE NOCASE",
     )
-    abstract fun observeDecksWithStats(now: Long): Flow<List<DeckWithStats>>
+    abstract fun observeDecksWithStats(dueUntil: Long): Flow<List<DeckWithStats>>
+
+    /** Emite null se o deck não existir ou tiver sido excluído. */
+    @Query("SELECT * FROM decks WHERE id = :id AND isDeleted = 0")
+    abstract fun observeById(id: String): Flow<DeckEntity?>
 
     @Query("SELECT * FROM decks WHERE id = :id")
     abstract suspend fun getById(id: String): DeckEntity?

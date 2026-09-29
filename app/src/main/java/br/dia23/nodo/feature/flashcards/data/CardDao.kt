@@ -30,4 +30,8 @@ interface CardDao {
 
     @Query("UPDATE cards SET isDeleted = 1, updatedAt = :now WHERE id = :id")
     suspend fun softDelete(id: String, now: Long = System.currentTimeMillis())
+
+    /** Desfaz a exclusão lógica. Atualiza updatedAt para a sincronização saber que a carta "voltou". */
+    @Query("UPDATE cards SET isDeleted = 0, updatedAt = :now WHERE id = :id")
+    suspend fun restore(id: String, now: Long = System.currentTimeMillis())
 }

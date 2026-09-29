@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,9 +104,33 @@ class FlashcardsDaoTest {
     fun estatisticasDeDeckSemCartasSaoZero() = runBlocking {
         deckDao.upsert(DeckEntity(name = "Vazio"))
 
-        val stats = deckDao.observeDecksWithStats(now = 1_000_000L).first().single()
+        val stats = deckDao.observeDecksWithStats(dueUntil = 1_000_000L).first().single()
 
         assertEquals(0, stats.cardCount)
         assertEquals(0, stats.dueCount)
+    }
+
+    @Test
+    fun restoreDesfazAExclusaoDaCarta() = runBlocking {
+        val deck = DeckEntity(name = "D")
+        deckDao.upsert(deck)
+        val card = CardEntity(deckId = deck.id, front = "a", back = "b")
+        cardDao.upsert(card)
+
+        cardDao.softDelete(card.id)
+        assertEquals(0, cardDao.observeByDeck(deck.id).first().size)
+
+        cardDao.restore(card.id)
+        assertEquals(listOf(card.id), cardDao.observeByDeck(deck.id).first().map { it.id })
+    }
+
+    @Test
+    fun observeByIdEmiteNullDepoisDeExcluirODeck() = runBlocking {
+        val deck = DeckEntity(name = "D")
+        deckDao.upsert(deck)
+        assertEquals("D", deckDao.observeById(deck.id).first()?.name)
+
+        deckDao.softDelete(deck.id)
+        assertNull(deckDao.observeById(deck.id).first())
     }
 }
