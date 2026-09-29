@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Nodo</string>
+
+    <!-- Lista de decks -->
+    <string name="decks_title">Meus decks</string>
+    <string name="decks_add">Novo deck</string>
+    <string name="decks_empty_title">Nenhum deck ainda</string>
+    <string name="decks_empty_hint">Toque em + para criar o primeiro.</string>
+    <string name="deck_cards_one">1 carta</string>
+    <string name="deck_cards_other">%d cartas</string>
+    <string name="deck_due">%d para revisar</string>
+    <string name="deck_options">Opções do deck</string>
+    <string name="deck_rename">Editar</string>
+    <string name="deck_delete">Excluir</string>
+
+    <!-- Diálogo de criar/editar -->
+    <string name="deck_dialog_title_create">Novo deck</string>
+    <string name="deck_dialog_title_edit">Editar deck</string>
+    <string name="deck_dialog_name">Nome</string>
+    <string name="deck_dialog_description">Descrição (opcional)</string>
+    <string name="deck_dialog_save">Salvar</string>
+
+    <!-- Confirmação de exclusão -->
+    <string name="deck_delete_title">Excluir deck?</string>
+    <string name="deck_delete_message">\"%1$s\" e todas as suas cartas serão excluídos.</string>
+
+    <string name="action_cancel">Cancelar</string>
+</resources>
