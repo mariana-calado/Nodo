@@ -80,4 +80,32 @@ class FlashcardsDaoTest {
 
         assertEquals(listOf("vencida"), cardDao.getDueCards(deck.id, now).map { it.front })
     }
+
+    @Test
+    fun estatisticasContamCartasAtivasEDevidasIgnorandoExcluidas() = runBlocking {
+        val deck = DeckEntity(name = "Stats")
+        deckDao.upsert(deck)
+        val now = 1_000_000L
+        cardDao.upsert(CardEntity(deckId = deck.id, front = "devida", back = "x", dueAt = now - 1))
+        cardDao.upsert(CardEntity(deckId = deck.id, front = "futura", back = "x", dueAt = now + 1))
+        val excluida = CardEntity(deckId = deck.id, front = "excluida", back = "x", dueAt = now - 1)
+        cardDao.upsert(excluida)
+        cardDao.softDelete(excluida.id)
+
+        val stats = deckDao.observeDecksWithStats(now).first().single()
+
+        assertEquals("Stats", stats.deck.name)
+        assertEquals(2, stats.cardCount) // a excluída não conta
+        assertEquals(1, stats.dueCount)
+    }
+
+    @Test
+    fun estatisticasDeDeckSemCartasSaoZero() = runBlocking {
+        deckDao.upsert(DeckEntity(name = "Vazio"))
+
+        val stats = deckDao.observeDecksWithStats(now = 1_000_000L).first().single()
+
+        assertEquals(0, stats.cardCount)
+        assertEquals(0, stats.dueCount)
+    }
 }
