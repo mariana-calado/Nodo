@@ -18,11 +18,27 @@
     <string name="deck_dialog_title_edit">Editar deck</string>
     <string name="deck_dialog_name">Nome</string>
     <string name="deck_dialog_description">Descrição (opcional)</string>
-    <string name="deck_dialog_save">Salvar</string>
 
     <!-- Confirmação de exclusão -->
     <string name="deck_delete_title">Excluir deck?</string>
     <string name="deck_delete_message">\"%1$s\" e todas as suas cartas serão excluídos.</string>
 
+    <!-- Detalhe do deck (lista de cartas) -->
+    <string name="cards_add">Nova carta</string>
+    <string name="cards_empty_title">Nenhuma carta ainda</string>
+    <string name="cards_empty_hint">Toque em + para adicionar a primeira.</string>
+    <string name="card_delete">Excluir carta</string>
+    <string name="card_deleted">Carta excluída</string>
+
+    <!-- Criar/editar carta -->
+    <string name="card_edit_title_create">Nova carta</string>
+    <string name="card_edit_title_edit">Editar carta</string>
+    <string name="card_front">Frente</string>
+    <string name="card_back">Verso</string>
+    <string name="card_save_and_new">Salvar e nova</string>
+
     <string name="action_cancel">Cancelar</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_undo">Desfazer</string>
+    <string name="action_navigate_up">Voltar</string>
 </resources>

@@ -67,7 +67,7 @@ fun DeckEditDialog(
                 onClick = { onSave(name, description) },
                 // Nome em branco não é permitido: o botão fica desabilitado.
                 enabled = name.isNotBlank(),
-            ) { Text(stringResource(R.string.deck_dialog_save)) }
+            ) { Text(stringResource(R.string.action_save)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
