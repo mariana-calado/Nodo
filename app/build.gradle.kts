@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 // Room exporta o schema do banco em JSON aqui; commitamos essa pasta para testar migrações no futuro.
@@ -54,6 +56,15 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     // ksp() = processador que GERA o código dos DAOs a partir das anotações, em tempo de compilação.
     ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    // Rotas tipadas do Navigation usam @Serializable (Kotlin serialization).
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    // hiltViewModel() para obter ViewModels do Hilt dentro de composables.
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
