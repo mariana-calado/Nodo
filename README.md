@@ -13,6 +13,7 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
 - [ ] Fase 1 — Flashcards (decks, cartas, modo estudo, SM-2)
   - [x] Modelagem Room: `Deck` e `Card`
   - [x] Tela de decks: criar, listar, editar e excluir (MVVM + Hilt + Navigation)
+  - [x] Cartas do deck: criar, editar e excluir com "Desfazer"
 - [ ] Fase 2 — Pomodoro + estatísticas
 - [ ] Fase 3 — Planner e lembretes
 - [ ] Fase 4 — Modo quiz
@@ -26,3 +27,8 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
 - Um pacote por funcionalidade (`feature/flashcards`, ...) e código compartilhado em `core/`.
 - MVVM com fluxo unidirecional: a tela desenha um `UiState` (StateFlow) e só envia eventos ao ViewModel.
 - Injeção de dependências com Hilt; o Repository é a única porta de entrada para os dados.
+
+## Créditos
+
+- Fonte [Montserrat](https://github.com/JulietaUla/Montserrat) — SIL Open Font License 1.1 (ver `licenses/Montserrat-OFL.txt`).
+- Ícones [Material Symbols](https://fonts.google.com/icons) do Google — Apache License 2.0.
