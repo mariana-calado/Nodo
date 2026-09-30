@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Android 13+: notificações precisam de permissão do usuário (pedida ao iniciar o primeiro pomodoro). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".NodoApplication"
         android:allowBackup="true"
@@ -24,6 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Recebe o alarme de fim de fase do Pomodoro (só o próprio app dispara: exported=false). -->
+        <receiver
+            android:name=".feature.pomodoro.notification.PomodoroAlarmReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

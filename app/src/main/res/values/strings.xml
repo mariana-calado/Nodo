@@ -62,6 +62,74 @@
     <string name="interval_days">%1$d d</string>
     <string name="interval_months">%1$d m</string>
 
+    <!-- Navegação principal (barra inferior) -->
+    <string name="nav_decks">Decks</string>
+    <string name="nav_pomodoro">Pomodoro</string>
+    <string name="nav_stats">Estatísticas</string>
+
+    <!-- Pomodoro -->
+    <string name="pomodoro_title">Pomodoro</string>
+    <string name="pomodoro_phase_focus">Foco</string>
+    <string name="pomodoro_phase_short_break">Pausa curta</string>
+    <string name="pomodoro_phase_long_break">Pausa longa</string>
+    <string name="pomodoro_no_subject">Sem matéria</string>
+    <string name="pomodoro_new_subject">Nova matéria</string>
+    <string name="pomodoro_start">Iniciar</string>
+    <string name="pomodoro_resume">Retomar</string>
+    <string name="pomodoro_pause">Pausar</string>
+    <string name="pomodoro_stop">Parar</string>
+    <string name="pomodoro_skip_break">Pular pausa</string>
+    <string name="pomodoro_cycle">Foco %1$d de %2$d do ciclo</string>
+    <string name="pomodoro_today">Hoje: %1$s de foco</string>
+    <string name="pomodoro_settings">Configurações</string>
+    <string name="pomodoro_settings_focus">Foco: %1$d min</string>
+    <string name="pomodoro_settings_short_break">Pausa curta: %1$d min</string>
+    <string name="pomodoro_settings_long_break">Pausa longa: %1$d min</string>
+    <string name="subject_dialog_name">Nome</string>
+    <string name="subject_dialog_color">Cor</string>
+    <string name="subject_color_option">Cor %1$d</string>
+
+    <!-- Notificações -->
+    <string name="notif_channel_timer">Timer do Pomodoro</string>
+    <string name="notif_channel_alerts">Fim do Pomodoro</string>
+    <string name="notif_paused">Pausado · %1$s restantes</string>
+    <string name="notif_focus_done">Foco concluído</string>
+    <string name="notif_break_done">Pausa encerrada</string>
+    <string name="notif_next_short_break">Hora de uma pausa curta.</string>
+    <string name="notif_next_long_break">Hora da pausa longa. Você merece!</string>
+    <string name="notif_next_focus">Hora de voltar ao foco.</string>
+
+    <!-- Durações -->
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="percent">%1$d%%</string>
+
+    <!-- Estatísticas -->
+    <string name="stats_title">Estatísticas</string>
+    <string name="stats_period_week">7 dias</string>
+    <string name="stats_period_month">30 dias</string>
+    <string name="stats_focus_time">Tempo de foco</string>
+    <string name="stats_sessions">Sessões de foco</string>
+    <string name="stats_reviews">Revisões</string>
+    <string name="stats_accuracy">Acertos</string>
+    <string name="stats_no_value">-</string>
+    <string name="stats_focus_per_day">Foco por dia (minutos)</string>
+    <string name="stats_reviews_per_day">Revisões por dia</string>
+    <string name="stats_legend_correct">Acertos</string>
+    <string name="stats_legend_wrong">Erros</string>
+    <string name="stats_by_subject">Foco por matéria</string>
+    <string name="stats_by_deck">Acertos por deck</string>
+    <string name="stats_deleted_deck">Deck excluído</string>
+    <plurals name="stats_deck_reviews">
+        <item quantity="one">%1$d revisão · %2$d%% de acertos</item>
+        <item quantity="many">%1$d revisões · %2$d%% de acertos</item>
+        <item quantity="other">%1$d revisões · %2$d%% de acertos</item>
+    </plurals>
+    <string name="stats_empty_title">Ainda não há dados</string>
+    <string name="stats_empty_hint">Estude um deck ou faça um pomodoro para ver suas estatísticas aqui.</string>
+    <string name="stats_chart_focus_description">Gráfico de barras com os minutos de foco de cada dia do período</string>
+    <string name="stats_chart_reviews_description">Gráfico de barras com os acertos e erros de cada dia do período</string>
+
     <string name="action_cancel">Cancelar</string>
     <string name="action_save">Salvar</string>
     <string name="action_undo">Desfazer</string>
