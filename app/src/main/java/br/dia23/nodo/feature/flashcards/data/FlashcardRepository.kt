@@ -1,5 +1,8 @@
 package br.dia23.nodo.feature.flashcards.data
 
+import br.dia23.nodo.feature.flashcards.domain.ReviewGrade
+import br.dia23.nodo.feature.flashcards.domain.Sm2
+import br.dia23.nodo.feature.flashcards.domain.sm2State
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -20,6 +23,7 @@ import javax.inject.Singleton
 class FlashcardRepository @Inject constructor(
     private val deckDao: DeckDao,
     private val cardDao: CardDao,
+    private val reviewDao: ReviewDao,
 ) {
     // --- Decks ---
 
@@ -73,11 +77,44 @@ class FlashcardRepository @Inject constructor(
 
     suspend fun restoreCard(id: String) = cardDao.restore(id)
 
+    // --- Estudo ---
+
+    /** Quantas cartas do deck estão para revisar hoje (para o botão "Estudar"). */
+    fun observeDueCount(deckId: String): Flow<Int> = flow {
+        emitAll(cardDao.observeDueCountByDeck(deckId, dueUntil = endOfToday()))
+    }
+
+    /** Foto das cartas para revisar agora. Não é Flow: a sessão não deve mudar enquanto você estuda. */
+    suspend fun getDueCards(deckId: String): List<CardEntity> =
+        cardDao.getDueCards(deckId, dueUntil = endOfToday())
+
     /**
-     * Último milissegundo de hoje, no fuso do aparelho.
+     * Aplica a resposta: o SM-2 calcula o novo estado da carta e gravamos carta + histórico juntos.
+     * A carta passa a vencer no início do dia (hoje + intervalo), então aparece o dia inteiro.
+     */
+    suspend fun reviewCard(card: CardEntity, grade: ReviewGrade) {
+        val now = System.currentTimeMillis()
+        val next = Sm2.review(card.sm2State(), grade)
+        val updated = card.copy(
+            easeFactor = next.easeFactor,
+            intervalDays = next.intervalDays,
+            repetitions = next.repetitions,
+            dueAt = startOfDay(daysFromToday = next.intervalDays.toLong()),
+            updatedAt = now,
+        )
+        val log = ReviewLogEntity(cardId = card.id, deckId = card.deckId, grade = grade, reviewedAt = now)
+        reviewDao.recordReview(updated, log)
+    }
+
+    // --- Datas (fuso do aparelho) ---
+
+    private fun startOfDay(daysFromToday: Long): Long =
+        LocalDate.now().plusDays(daysFromToday).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+    /**
+     * Último milissegundo de hoje.
      * "Para revisar" = vence até o fim do dia (como no Anki): os intervalos do SM-2 são em dias,
      * então não faz sentido esconder uma carta só porque ela vence às 23h.
      */
-    private fun endOfToday(): Long =
-        LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+    private fun endOfToday(): Long = startOfDay(daysFromToday = 1) - 1
 }

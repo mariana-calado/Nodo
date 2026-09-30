@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.dia23.nodo.core.database.NodoDatabase
+import br.dia23.nodo.feature.flashcards.domain.ReviewGrade
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -25,7 +26,7 @@ class FlashcardRepositoryTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, NodoDatabase::class.java).build()
         // Sem Hilt no teste: criamos o repositório "na mão" com os DAOs do banco em memória.
-        repository = FlashcardRepository(db.deckDao(), db.cardDao())
+        repository = FlashcardRepository(db.deckDao(), db.cardDao(), db.reviewDao())
     }
 
     @After
@@ -62,5 +63,35 @@ class FlashcardRepositoryTest {
         repository.createCard(deck.id, "a", "b")
 
         assertEquals(1, decks.first().single().dueCount)
+    }
+
+    @Test
+    fun acertarTiraACartaDaRevisaoDeHojeERegistraOHistorico() = runBlocking {
+        val deck = DeckEntity(name = "D")
+        db.deckDao().upsert(deck)
+        repository.createCard(deck.id, "cat", "gato")
+        val card = repository.getDueCards(deck.id).single()
+
+        repository.reviewCard(card, ReviewGrade.GOOD)
+
+        assertEquals(0, repository.getDueCards(deck.id).size) // agora só vence amanhã
+        val updated = repository.getCard(card.id)!!
+        assertEquals(1, updated.repetitions)
+        assertEquals(1, updated.intervalDays)
+        assertEquals(listOf(ReviewGrade.GOOD), db.reviewDao().getLogsForCard(card.id).map { it.grade })
+    }
+
+    @Test
+    fun errarZeraASequenciaDaCarta() = runBlocking {
+        val deck = DeckEntity(name = "D")
+        db.deckDao().upsert(deck)
+        val card = CardEntity(deckId = deck.id, front = "a", back = "b", repetitions = 4, intervalDays = 30)
+        db.cardDao().upsert(card)
+
+        repository.reviewCard(card, ReviewGrade.AGAIN)
+
+        val updated = repository.getCard(card.id)!!
+        assertEquals(0, updated.repetitions)
+        assertEquals(1, updated.intervalDays)
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import br.dia23.nodo.core.database.NodoDatabase
 import br.dia23.nodo.feature.flashcards.data.CardDao
 import br.dia23.nodo.feature.flashcards.data.DeckDao
+import br.dia23.nodo.feature.flashcards.data.ReviewDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,4 +32,7 @@ object DatabaseModule {
 
     @Provides
     fun provideCardDao(database: NodoDatabase): CardDao = database.cardDao()
+
+    @Provides
+    fun provideReviewDao(database: NodoDatabase): ReviewDao = database.reviewDao()
 }

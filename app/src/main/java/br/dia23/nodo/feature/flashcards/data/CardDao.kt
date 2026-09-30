@@ -14,16 +14,19 @@ interface CardDao {
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun getById(id: String): CardEntity?
 
-    /** Cartas para o modo estudo: as que já venceram (dueAt <= agora), mais atrasadas primeiro. */
+    /** Cartas para o modo estudo: as que vencem até `dueUntil`, mais atrasadas primeiro. */
     @Query(
-        "SELECT * FROM cards WHERE deckId = :deckId AND isDeleted = 0 AND dueAt <= :now " +
-            "ORDER BY dueAt",
+        "SELECT * FROM cards WHERE deckId = :deckId AND isDeleted = 0 AND dueAt <= :dueUntil " +
+            "ORDER BY dueAt, createdAt",
     )
-    suspend fun getDueCards(deckId: String, now: Long): List<CardEntity>
+    suspend fun getDueCards(deckId: String, dueUntil: Long): List<CardEntity>
+
+    @Query("SELECT COUNT(*) FROM cards WHERE deckId = :deckId AND isDeleted = 0 AND dueAt <= :dueUntil")
+    fun observeDueCountByDeck(deckId: String, dueUntil: Long): Flow<Int>
 
     /** Quantas cartas estão devidas em todos os decks (o Planner vai usar isso na fase 3). */
-    @Query("SELECT COUNT(*) FROM cards WHERE isDeleted = 0 AND dueAt <= :now")
-    fun observeDueCount(now: Long): Flow<Int>
+    @Query("SELECT COUNT(*) FROM cards WHERE isDeleted = 0 AND dueAt <= :dueUntil")
+    fun observeDueCount(dueUntil: Long): Flow<Int>
 
     @Upsert
     suspend fun upsert(card: CardEntity)
