@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import br.dia23.nodo.core.navigation.NodoNavHost
+import br.dia23.nodo.core.navigation.NodoApp
 import br.dia23.nodo.ui.theme.NodoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NodoTheme {
-                NodoNavHost()
+                NodoApp()
             }
         }
     }

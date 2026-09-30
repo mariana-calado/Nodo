@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.dia23.nodo.R
+import br.dia23.nodo.core.ui.TopLevelScreenInsets
 import br.dia23.nodo.feature.flashcards.data.DeckEntity
 import br.dia23.nodo.feature.flashcards.data.DeckWithStats
 import br.dia23.nodo.ui.theme.NodoTheme
@@ -82,6 +83,8 @@ fun DeckListScreen(
 ) {
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.decks_title)) }) },
+        // Tela principal: a barra inferior do app já cuida do espaço de baixo.
+        contentWindowInsets = TopLevelScreenInsets,
         floatingActionButton = {
             FloatingActionButton(onClick = onAddClick) {
                 // Ícones vêm de res/drawable (vetores XML do Material). A antiga lib material-icons
