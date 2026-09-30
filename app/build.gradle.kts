@@ -2,13 +2,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
-// Room exporta o schema do banco em JSON aqui; commitamos essa pasta para testar migrações no futuro.
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+// Plugin do Room: exporta o schema do banco em JSON (uma versão por arquivo) e disponibiliza esses
+// arquivos para os testes de migração. Commitamos a pasta: é o "histórico" do formato do banco.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -73,6 +75,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    // MigrationTestHelper: cria o banco numa versão antiga e confere a migração para a nova.
+    androidTestImplementation(libs.androidx.room.testing)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
