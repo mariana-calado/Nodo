@@ -4,6 +4,7 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -88,11 +89,38 @@ class MigrationTest {
     }
 
     @Test
-    fun migracaoDaVersao1DiretoParaA3() {
-        // Quem ficou sem atualizar o app desde a versão 1 passa pelas duas migrações em sequência.
+    fun migracao3Para4AdicionaMateriaNosDecksSemPerderNada() {
+        helper.createDatabase(TEST_DB, 3).apply {
+            execSQL(
+                "INSERT INTO decks (id, name, description, createdAt, updatedAt, isDeleted) " +
+                    "VALUES ('d1', 'Inglês', '', 1, 1, 0)",
+            )
+            close()
+        }
+
+        val db = helper.runMigrationsAndValidate(TEST_DB, 4, true)
+
+        db.query("SELECT name, subjectId FROM decks WHERE id = 'd1'").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals("Inglês", cursor.getString(0))
+            assertTrue(cursor.isNull(1)) // deck antigo fica sem matéria
+        }
+        db.execSQL(
+            "INSERT INTO planner_events (id, title, type, dateEpochDay, subjectId, reminderDaysBefore, isDone, " +
+                "createdAt, updatedAt, isDeleted) VALUES ('e1', 'P1', 'EXAM', 20000, NULL, 1, 0, 1, 1, 0)",
+        )
+        db.execSQL(
+            "INSERT INTO weekly_goals (id, type, target, subjectId, createdAt, updatedAt, isDeleted) " +
+                "VALUES ('g1', 'REVIEWS', 100, NULL, 1, 1, 0)",
+        )
+    }
+
+    @Test
+    fun migracaoDaVersao1DiretoParaAUltima() {
+        // Quem ficou sem atualizar o app desde a versão 1 passa por todas as migrações em sequência.
         helper.createDatabase(TEST_DB, 1).close()
 
-        helper.runMigrationsAndValidate(TEST_DB, 3, true).close()
+        helper.runMigrationsAndValidate(TEST_DB, 4, true).close()
     }
 
     private companion object {

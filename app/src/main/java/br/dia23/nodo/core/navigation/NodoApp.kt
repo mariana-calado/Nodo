@@ -24,6 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import br.dia23.nodo.R
 import br.dia23.nodo.feature.flashcards.navigation.DeckListDestination
 import br.dia23.nodo.feature.flashcards.navigation.flashcardsGraph
+import br.dia23.nodo.feature.planner.navigation.PlannerDestination
+import br.dia23.nodo.feature.planner.navigation.plannerGraph
 import br.dia23.nodo.feature.pomodoro.navigation.PomodoroDestination
 import br.dia23.nodo.feature.pomodoro.navigation.pomodoroGraph
 import br.dia23.nodo.feature.stats.navigation.StatsDestination
@@ -37,6 +39,7 @@ enum class TopLevelDestination(
     @get:DrawableRes val selectedIcon: Int,
 ) {
     DECKS(DeckListDestination, R.string.nav_decks, R.drawable.ic_style, R.drawable.ic_style_filled),
+    PLANNER(PlannerDestination, R.string.nav_planner, R.drawable.ic_calendar_month, R.drawable.ic_calendar_month_filled),
     POMODORO(PomodoroDestination, R.string.nav_pomodoro, R.drawable.ic_timer, R.drawable.ic_timer_filled),
     STATS(StatsDestination, R.string.nav_stats, R.drawable.ic_bar_chart, R.drawable.ic_bar_chart),
 }
@@ -80,6 +83,7 @@ fun NodoApp() {
             modifier = Modifier.padding(innerPadding),
         ) {
             flashcardsGraph(navController)
+            plannerGraph()
             pomodoroGraph()
             statsGraph()
         }

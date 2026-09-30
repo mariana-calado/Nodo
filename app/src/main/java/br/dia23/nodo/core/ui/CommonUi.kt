@@ -25,16 +25,16 @@ import br.dia23.nodo.ui.theme.subjectColor
 val TopLevelScreenInsets: WindowInsets
     @Composable get() = ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
 
-/** "45 min" ou "2 h 15 min". */
+/** "45 min", "2 h" ou "2 h 15 min". */
 @Composable
 fun formatDuration(ms: Long): String {
     val totalMinutes = (ms / 60_000).toInt()
     val hours = totalMinutes / 60
     val minutes = totalMinutes % 60
-    return if (hours > 0) {
-        stringResource(R.string.duration_hours_minutes, hours, minutes)
-    } else {
-        stringResource(R.string.duration_minutes, minutes)
+    return when {
+        hours == 0 -> stringResource(R.string.duration_minutes, minutes)
+        minutes == 0 -> stringResource(R.string.duration_hours, hours)
+        else -> stringResource(R.string.duration_hours_minutes, hours, minutes)
     }
 }
 

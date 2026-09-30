@@ -32,6 +32,22 @@
         <receiver
             android:name=".feature.pomodoro.notification.PomodoroAlarmReceiver"
             android:exported="false" />
+
+        <!--
+            O WorkManager normalmente se inicia sozinho, com a configuração padrão.
+            Removemos essa inicialização automática porque o NodoApplication fornece a sua,
+            com a fábrica do Hilt que sabe injetar dependências nos Workers.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>

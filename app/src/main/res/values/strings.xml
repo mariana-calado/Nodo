@@ -66,6 +66,7 @@
     <string name="nav_decks">Decks</string>
     <string name="nav_pomodoro">Pomodoro</string>
     <string name="nav_stats">Estatísticas</string>
+    <string name="nav_planner">Planner</string>
 
     <!-- Pomodoro -->
     <string name="pomodoro_title">Pomodoro</string>
@@ -102,6 +103,7 @@
     <!-- Durações -->
     <string name="duration_minutes">%1$d min</string>
     <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="duration_hours">%1$d h</string>
     <string name="percent">%1$d%%</string>
 
     <!-- Estatísticas -->
@@ -130,6 +132,97 @@
     <string name="stats_chart_focus_description">Gráfico de barras com os minutos de foco de cada dia do período</string>
     <string name="stats_chart_reviews_description">Gráfico de barras com os acertos e erros de cada dia do período</string>
 
+    <!-- Planner -->
+    <string name="planner_title">Planner</string>
+    <string name="planner_today">Hoje</string>
+    <plurals name="planner_suggestion_total">
+        <item quantity="one">%d carta para revisar</item>
+        <item quantity="many">%d cartas para revisar</item>
+        <item quantity="other">%d cartas para revisar</item>
+    </plurals>
+    <string name="planner_nothing_today">Nada para revisar hoje</string>
+    <plurals name="planner_due_today">
+        <item quantity="one">%d vence hoje</item>
+        <item quantity="many">%d vencem hoje</item>
+        <item quantity="other">%d vencem hoje</item>
+    </plurals>
+    <string name="planner_exam_prep">+%1$d por dia para \"%2$s\" (%3$s)</string>
+    <string name="planner_exam_prep_hint">Para adiantar essas cartas, use \"Revisar todas\" nos decks da matéria.</string>
+    <string name="planner_goals">Metas da semana</string>
+    <string name="planner_goals_empty">Nenhuma meta ainda.</string>
+    <string name="planner_events">Provas e prazos</string>
+    <string name="planner_events_empty">Nenhuma prova ou prazo pela frente.</string>
+    <string name="planner_add_goal">Nova meta</string>
+    <string name="planner_add_event">Nova prova ou prazo</string>
+    <string name="planner_reminders">Lembretes</string>
+
+    <!-- Metas -->
+    <string name="goal_focus_total">Foco total</string>
+    <string name="goal_focus_subject">Foco em %1$s</string>
+    <string name="goal_reviews">Revisões</string>
+    <string name="goal_progress_of">%1$s de %2$s</string>
+    <plurals name="goal_reviews_count">
+        <item quantity="one">%d revisão</item>
+        <item quantity="many">%d revisões</item>
+        <item quantity="other">%d revisões</item>
+    </plurals>
+    <string name="goal_done">Meta batida!</string>
+    <string name="goal_per_day">~%1$s por dia até domingo</string>
+    <string name="goal_dialog_title_new">Nova meta semanal</string>
+    <string name="goal_dialog_title_edit">Editar meta</string>
+    <string name="goal_type_focus">Foco</string>
+    <string name="goal_type_reviews">Revisões</string>
+    <string name="goal_focus_target">Meta: %1$d h de foco por semana</string>
+    <string name="goal_reviews_target">Meta: %1$d revisões por semana</string>
+    <string name="goal_all_subjects">Todas as matérias</string>
+
+    <!-- Provas e prazos -->
+    <string name="event_type_exam">Prova</string>
+    <string name="event_type_deadline">Prazo</string>
+    <string name="event_dialog_title_edit">Editar</string>
+    <string name="event_title">Título</string>
+    <string name="event_date">Data</string>
+    <string name="event_reminder_none">Sem lembrete</string>
+    <string name="event_reminder_same_day">Lembrar no dia</string>
+    <plurals name="event_reminder_days_before">
+        <item quantity="one">Lembrar %d dia antes</item>
+        <item quantity="many">Lembrar %d dias antes</item>
+        <item quantity="other">Lembrar %d dias antes</item>
+    </plurals>
+    <string name="event_done">Entregue</string>
+    <string name="event_has_reminder">Com lembrete</string>
+
+    <!-- Contagem regressiva -->
+    <string name="countdown_today">hoje</string>
+    <string name="countdown_tomorrow">amanhã</string>
+    <plurals name="countdown_in_days">
+        <item quantity="one">em %d dia</item>
+        <item quantity="many">em %d dias</item>
+        <item quantity="other">em %d dias</item>
+    </plurals>
+    <plurals name="countdown_overdue">
+        <item quantity="one">atrasado há %d dia</item>
+        <item quantity="many">atrasado há %d dias</item>
+        <item quantity="other">atrasado há %d dias</item>
+    </plurals>
+
+    <!-- Lembretes -->
+    <string name="reminders_daily">Lembrete diário de estudo</string>
+    <string name="reminders_daily_hint">Avisa quantas cartas revisar no dia. Provas e prazos têm avisos próprios.</string>
+    <string name="notif_channel_reminders">Lembretes de estudo</string>
+    <plurals name="reminder_daily_title">
+        <item quantity="one">Hoje: %d carta para revisar</item>
+        <item quantity="many">Hoje: %d cartas para revisar</item>
+        <item quantity="other">Hoje: %d cartas para revisar</item>
+    </plurals>
+    <string name="reminder_daily_text">Alguns minutos agora poupam horas antes da prova.</string>
+    <string name="reminder_event_text">%1$s %2$s</string>
+
+    <!-- Deck: matéria e revisão adiantada -->
+    <string name="deck_dialog_subject">Matéria</string>
+    <string name="study_review_all">Revisar todas</string>
+
+    <string name="action_delete">Excluir</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_save">Salvar</string>
     <string name="action_undo">Desfazer</string>
