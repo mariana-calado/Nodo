@@ -18,7 +18,10 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Hilt · Room · DataStore · 
 - [x] Fase 2 — Pomodoro + estatísticas
   - [x] Timer Pomodoro por matéria, com notificação e alarme de fim de fase
   - [x] Estatísticas de 7/30 dias: tempo de foco, acertos, gráficos por dia, por matéria e por deck
-- [ ] Fase 3 — Planner e lembretes
+- [x] Fase 3 — Planner e lembretes
+  - [x] Provas e prazos com lembretes; metas semanais de foco e de revisões
+  - [x] Sugestão de cartas do dia considerando as provas próximas; "Revisar todas" para adiantar
+  - [x] Lembrete diário de estudo com WorkManager
 - [ ] Fase 4 — Modo quiz
 - [ ] Fase 5 — Resumo com IA (Cloud Functions)
 - [ ] Fase 6 — Login com Google e sincronização
@@ -35,6 +38,8 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Hilt · Room · DataStore · 
 - Timer do Pomodoro baseado em horários (não em contagem de segundos), persistido no DataStore: o tempo fica certo mesmo com o app fechado. Um controlador com escopo de aplicação finaliza as fases, e um alarme do sistema cobre o caso de o processo ter sido encerrado.
 - Gráficos desenhados com o Canvas do Compose, sem biblioteca externa, com descrição para leitores de tela.
 - Navegação por abas com barra inferior; cada funcionalidade registra o próprio grafo de navegação.
+- Matérias ficam em `core/subjects` porque são compartilhadas por decks, Pomodoro, Planner e estatísticas.
+- Lembretes com WorkManager + Hilt (`@HiltWorker`): cada lembrete é um "trabalho único" com nome fixo, então editar um evento substitui o aviso em vez de duplicar. Os agendamentos sobrevivem ao reinício do aparelho.
 
 ## Créditos
 
