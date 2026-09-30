@@ -1,8 +1,8 @@
 package br.dia23.nodo.feature.stats.domain
 
+import br.dia23.nodo.core.subjects.SubjectEntity
 import br.dia23.nodo.feature.flashcards.data.ReviewLogEntity
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionEntity
-import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

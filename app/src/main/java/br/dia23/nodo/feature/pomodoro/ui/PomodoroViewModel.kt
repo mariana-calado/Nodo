@@ -2,9 +2,10 @@ package br.dia23.nodo.feature.pomodoro.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.dia23.nodo.core.subjects.SubjectEntity
+import br.dia23.nodo.core.subjects.SubjectRepository
 import br.dia23.nodo.feature.pomodoro.PomodoroController
 import br.dia23.nodo.feature.pomodoro.data.PomodoroRepository
-import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroPhase
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,6 +40,7 @@ data class PomodoroUiState(
 class PomodoroViewModel @Inject constructor(
     private val controller: PomodoroController,
     private val repository: PomodoroRepository,
+    private val subjectRepository: SubjectRepository,
 ) : ViewModel() {
 
     /**
@@ -57,7 +59,7 @@ class PomodoroViewModel @Inject constructor(
     val uiState: StateFlow<PomodoroUiState> = combine(
         controller.state.filterNotNull(),
         controller.settings.filterNotNull(),
-        repository.observeSubjects(),
+        subjectRepository.observeSubjects(),
         repository.observeFocusedToday(),
         clock,
     ) { state, settings, subjects, focusedToday, now ->
@@ -94,7 +96,7 @@ class PomodoroViewModel @Inject constructor(
     fun onCreateSubject(name: String, colorIndex: Int) {
         if (name.isBlank()) return
         viewModelScope.launch {
-            val subject = repository.createSubject(name, colorIndex)
+            val subject = subjectRepository.createSubject(name, colorIndex)
             controller.selectSubject(subject.id) // já deixa a matéria nova selecionada
         }
     }

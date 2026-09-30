@@ -2,11 +2,12 @@ package br.dia23.nodo.core.di
 
 import android.content.Context
 import br.dia23.nodo.core.database.NodoDatabase
+import br.dia23.nodo.core.subjects.SubjectDao
 import br.dia23.nodo.feature.flashcards.data.CardDao
 import br.dia23.nodo.feature.flashcards.data.DeckDao
 import br.dia23.nodo.feature.flashcards.data.ReviewDao
+import br.dia23.nodo.feature.planner.data.PlannerDao
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionDao
-import br.dia23.nodo.feature.pomodoro.data.SubjectDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,4 +44,7 @@ object DatabaseModule {
 
     @Provides
     fun provideFocusSessionDao(database: NodoDatabase): FocusSessionDao = database.focusSessionDao()
+
+    @Provides
+    fun providePlannerDao(database: NodoDatabase): PlannerDao = database.plannerDao()
 }

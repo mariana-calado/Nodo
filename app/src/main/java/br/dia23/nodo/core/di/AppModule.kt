@@ -24,6 +24,15 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class ApplicationScope
 
+/** Cada DataStore é um arquivo separado; o qualifier diz ao Hilt qual entregar. */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PomodoroPreferences
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PlannerPreferences
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -40,6 +49,13 @@ object AppModule {
 
     @Provides
     @Singleton
+    @PomodoroPreferences
     fun providePomodoroDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         PreferenceDataStoreFactory.create(produceFile = { context.preferencesDataStoreFile("pomodoro") })
+
+    @Provides
+    @Singleton
+    @PlannerPreferences
+    fun providePlannerDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create(produceFile = { context.preferencesDataStoreFile("planner") })
 }

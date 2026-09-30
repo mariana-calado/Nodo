@@ -62,10 +62,11 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.dia23.nodo.R
-import br.dia23.nodo.core.ui.ColorDot
+import br.dia23.nodo.core.subjects.SubjectEntity
+import br.dia23.nodo.core.subjects.ui.NewSubjectDialog
+import br.dia23.nodo.core.subjects.ui.SubjectPicker
 import br.dia23.nodo.core.ui.TopLevelScreenInsets
 import br.dia23.nodo.core.ui.formatDuration
-import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroPhase
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroSettings
 import br.dia23.nodo.ui.theme.NodoTheme
@@ -151,8 +152,8 @@ fun PomodoroScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            SubjectSelector(
-                selected = uiState.selectedSubject,
+            SubjectPicker(
+                selectedId = uiState.selectedSubject?.id,
                 subjects = uiState.subjects,
                 // Matéria só muda antes de começar (o tempo já corrido pertence à matéria escolhida).
                 enabled = !uiState.isStarted,
@@ -308,55 +309,6 @@ private fun ButtonContent(icon: Int, label: Int) {
     Icon(painterResource(icon), contentDescription = null, modifier = Modifier.size(18.dp))
     Spacer(Modifier.width(8.dp))
     Text(stringResource(label))
-}
-
-@Composable
-private fun SubjectSelector(
-    selected: SubjectEntity?,
-    subjects: List<SubjectEntity>,
-    enabled: Boolean,
-    onSelect: (String?) -> Unit,
-    onNewSubject: () -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    // O Box é a "âncora": o DropdownMenu abre logo abaixo do chip.
-    Box {
-        AssistChip(
-            onClick = { expanded = true },
-            enabled = enabled,
-            label = { Text(selected?.name ?: stringResource(R.string.pomodoro_no_subject)) },
-            leadingIcon = { ColorDot(selected?.colorIndex) },
-        )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.pomodoro_no_subject)) },
-                leadingIcon = { ColorDot(null) },
-                onClick = {
-                    expanded = false
-                    onSelect(null)
-                },
-            )
-            subjects.forEach { subject ->
-                DropdownMenuItem(
-                    text = { Text(subject.name) },
-                    leadingIcon = { ColorDot(subject.colorIndex) },
-                    onClick = {
-                        expanded = false
-                        onSelect(subject.id)
-                    },
-                )
-            }
-            HorizontalDivider()
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.pomodoro_new_subject)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_add), contentDescription = null) },
-                onClick = {
-                    expanded = false
-                    onNewSubject()
-                },
-            )
-        }
-    }
 }
 
 @Composable

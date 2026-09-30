@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import br.dia23.nodo.core.di.PomodoroPreferences
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroPhase
 import br.dia23.nodo.feature.pomodoro.domain.PomodoroSettings
 import br.dia23.nodo.feature.pomodoro.domain.TimerState
@@ -23,7 +24,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class TimerStore @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
+    @param:PomodoroPreferences private val dataStore: DataStore<Preferences>,
 ) {
     val settings: Flow<PomodoroSettings> = dataStore.data.map { it.toSettings() }
 

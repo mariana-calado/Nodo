@@ -1,6 +1,7 @@
 package br.dia23.nodo.feature.pomodoro
 
 import br.dia23.nodo.core.di.ApplicationScope
+import br.dia23.nodo.core.subjects.SubjectRepository
 import br.dia23.nodo.feature.pomodoro.data.PomodoroRepository
 import br.dia23.nodo.feature.pomodoro.data.TimerStore
 import br.dia23.nodo.feature.pomodoro.domain.FocusRecord
@@ -33,6 +34,7 @@ import javax.inject.Singleton
 class PomodoroController @Inject constructor(
     private val timerStore: TimerStore,
     private val repository: PomodoroRepository,
+    private val subjectRepository: SubjectRepository,
     private val notifier: PomodoroNotifier,
     private val alarms: PomodoroAlarmScheduler,
     @param:ApplicationScope private val scope: CoroutineScope,
@@ -120,7 +122,7 @@ class PomodoroController @Inject constructor(
     }
 
     private suspend fun syncAlarmAndNotification(state: TimerState) {
-        val subjectName = state.subjectId?.let { repository.getSubject(it)?.name }
+        val subjectName = state.subjectId?.let { subjectRepository.getSubject(it)?.name }
         val endsAt = state.endsAt()
         when {
             endsAt != null -> {

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import br.dia23.nodo.core.subjects.SubjectEntity
 import java.util.UUID
 
 /** Uma sessão de foco do Pomodoro (as pausas não são salvas). */

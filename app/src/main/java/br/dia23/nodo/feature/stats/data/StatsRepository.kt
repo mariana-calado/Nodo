@@ -1,9 +1,9 @@
 package br.dia23.nodo.feature.stats.data
 
+import br.dia23.nodo.core.subjects.SubjectDao
 import br.dia23.nodo.feature.flashcards.data.DeckDao
 import br.dia23.nodo.feature.flashcards.data.ReviewDao
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionDao
-import br.dia23.nodo.feature.pomodoro.data.SubjectDao
 import br.dia23.nodo.feature.stats.domain.StatsCalculator
 import br.dia23.nodo.feature.stats.domain.StudyStats
 import kotlinx.coroutines.flow.Flow

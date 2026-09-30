@@ -1,9 +1,9 @@
 package br.dia23.nodo.feature.stats.domain
 
+import br.dia23.nodo.core.subjects.SubjectEntity
 import br.dia23.nodo.feature.flashcards.data.ReviewLogEntity
 import br.dia23.nodo.feature.flashcards.domain.ReviewGrade
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionEntity
-import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue

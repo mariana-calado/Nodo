@@ -1,10 +1,13 @@
-package br.dia23.nodo.feature.pomodoro.data
+package br.dia23.nodo.core.subjects
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-/** Matéria de estudo (ex.: "Cálculo"). As sessões de foco são contadas por matéria. */
+/**
+ * Matéria de estudo (ex.: "Cálculo"). Compartilhada entre funcionalidades: decks, sessões de foco,
+ * provas e metas apontam para ela.
+ */
 @Entity(tableName = "subjects")
 data class SubjectEntity(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),

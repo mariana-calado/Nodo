@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.dia23.nodo.core.database.NodoDatabase
+import br.dia23.nodo.core.subjects.SubjectRepository
 import br.dia23.nodo.feature.pomodoro.domain.FocusRecord
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -21,31 +22,23 @@ class PomodoroRepositoryTest {
 
     private lateinit var db: NodoDatabase
     private lateinit var repository: PomodoroRepository
+    private lateinit var subjectRepository: SubjectRepository
     private val minute = 60_000L
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, NodoDatabase::class.java).build()
-        repository = PomodoroRepository(db.subjectDao(), db.focusSessionDao())
+        repository = PomodoroRepository(db.focusSessionDao())
+        subjectRepository = SubjectRepository(db.subjectDao())
     }
 
     @After
     fun tearDown() = db.close()
 
     @Test
-    fun criaMateriaEListaEmOrdemAlfabetica() = runBlocking {
-        repository.createSubject("  Química ", colorIndex = 1)
-        repository.createSubject("cálculo", colorIndex = 2)
-
-        val names = repository.observeSubjects().first().map { it.name }
-
-        assertEquals(listOf("cálculo", "Química"), names) // sem espaços extras, sem diferenciar maiúsculas
-    }
-
-    @Test
     fun salvaSessoesESomaOFocoDeHoje() = runBlocking {
-        val subject = repository.createSubject("Cálculo", colorIndex = 0)
+        val subject = subjectRepository.createSubject("Cálculo", colorIndex = 0)
         // Horários a partir do início de hoje: o teste não quebra se rodar logo depois da meia-noite.
         val today = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         repository.saveFocusSession(FocusRecord(subject.id, today + minute, today + 26 * minute, 25 * minute, 25 * minute, true))
