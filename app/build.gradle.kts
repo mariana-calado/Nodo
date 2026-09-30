@@ -72,6 +72,11 @@ dependencies {
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     // DataStore: armazenamento chave-valor assíncrono (substituto moderno do SharedPreferences).
     implementation(libs.androidx.datastore.preferences)
+    // WorkManager: tarefas agendadas que o sistema garante executar (lembretes), mesmo com o app fechado.
+    implementation(libs.androidx.work.runtime.ktx)
+    // @HiltWorker: permite injetar dependências (repositórios) nos Workers.
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
