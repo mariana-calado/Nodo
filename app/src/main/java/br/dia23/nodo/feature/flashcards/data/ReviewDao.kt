@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class ReviewDao {
@@ -27,4 +28,8 @@ abstract class ReviewDao {
 
     @Query("SELECT * FROM review_logs WHERE cardId = :cardId AND isDeleted = 0 ORDER BY reviewedAt")
     abstract suspend fun getLogsForCard(cardId: String): List<ReviewLogEntity>
+
+    /** Para as estatísticas. */
+    @Query("SELECT * FROM review_logs WHERE isDeleted = 0 AND reviewedAt >= :from ORDER BY reviewedAt")
+    abstract fun observeSince(from: Long): Flow<List<ReviewLogEntity>>
 }

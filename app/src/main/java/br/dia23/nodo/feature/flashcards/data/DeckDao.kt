@@ -34,6 +34,10 @@ abstract class DeckDao {
     )
     abstract fun observeDecksWithStats(dueUntil: Long): Flow<List<DeckWithStats>>
 
+    /** Inclui excluídos: as estatísticas ainda mostram o nome de decks antigos. */
+    @Query("SELECT * FROM decks")
+    abstract fun observeAllIncludingDeleted(): Flow<List<DeckEntity>>
+
     /** Emite null se o deck não existir ou tiver sido excluído. */
     @Query("SELECT * FROM decks WHERE id = :id AND isDeleted = 0")
     abstract fun observeById(id: String): Flow<DeckEntity?>
