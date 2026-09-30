@@ -50,7 +50,8 @@ class StudyViewModel @Inject constructor(
     private val repository: FlashcardRepository,
 ) : ViewModel() {
 
-    private val deckId = savedStateHandle.toRoute<StudyDestination>().deckId
+    private val route = savedStateHandle.toRoute<StudyDestination>()
+    private val deckId = route.deckId
     private var session: StudySession? = null
     private var turn = 0
 
@@ -60,7 +61,8 @@ class StudyViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val deckName = repository.observeDeck(deckId).first()?.name.orEmpty()
-            val newSession = StudySession(repository.getDueCards(deckId))
+            val cards = if (route.reviewAll) repository.getAllCards(deckId) else repository.getDueCards(deckId)
+            val newSession = StudySession(cards)
             session = newSession
             _uiState.value = buildState(newSession, deckName)
         }

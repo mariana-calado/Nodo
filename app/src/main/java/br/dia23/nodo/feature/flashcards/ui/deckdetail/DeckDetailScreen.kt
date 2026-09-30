@@ -18,6 +18,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -49,6 +50,7 @@ fun DeckDetailRoute(
     onAddCard: () -> Unit,
     onCardClick: (cardId: String) -> Unit,
     onStudy: () -> Unit,
+    onStudyAll: () -> Unit,
     viewModel: DeckDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,6 +61,7 @@ fun DeckDetailRoute(
         onAddCard = onAddCard,
         onCardClick = onCardClick,
         onStudy = onStudy,
+        onStudyAll = onStudyAll,
         onDeleteCard = viewModel::onDeleteCard,
         onUndoDelete = viewModel::onUndoDelete,
     )
@@ -72,6 +75,7 @@ fun DeckDetailScreen(
     onAddCard: () -> Unit,
     onCardClick: (String) -> Unit,
     onStudy: () -> Unit,
+    onStudyAll: () -> Unit,
     onDeleteCard: (String) -> Unit,
     onUndoDelete: (String) -> Unit,
 ) {
@@ -122,7 +126,7 @@ fun DeckDetailScreen(
             when {
                 uiState.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 uiState.cards.isEmpty() -> EmptyState(Modifier.align(Alignment.Center))
-                else -> CardList(uiState.cards, uiState.dueCount, onCardClick, onStudy, deleteWithUndo)
+                else -> CardList(uiState.cards, uiState.dueCount, onCardClick, onStudy, onStudyAll, deleteWithUndo)
             }
         }
     }
@@ -134,6 +138,7 @@ private fun CardList(
     dueCount: Int,
     onCardClick: (String) -> Unit,
     onStudy: () -> Unit,
+    onStudyAll: () -> Unit,
     onDeleteCard: (String) -> Unit,
 ) {
     LazyColumn(
@@ -142,14 +147,20 @@ private fun CardList(
     ) {
         // Primeiro item da lista: o botão rola junto com as cartas.
         item(key = "study") {
-            Button(onClick = onStudy, enabled = dueCount > 0, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    if (dueCount > 0) {
-                        stringResource(R.string.study_start, dueCount)
-                    } else {
-                        stringResource(R.string.study_nothing_due)
-                    },
-                )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onStudy, enabled = dueCount > 0, modifier = Modifier.weight(1f)) {
+                    Text(
+                        if (dueCount > 0) {
+                            stringResource(R.string.study_start, dueCount)
+                        } else {
+                            stringResource(R.string.study_nothing_due)
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                // Adiantar revisões (ex.: antes de uma prova): estuda também as que ainda não venceram.
+                OutlinedButton(onClick = onStudyAll) { Text(stringResource(R.string.study_review_all)) }
             }
         }
         items(cards, key = { it.id }) { card ->
@@ -215,7 +226,8 @@ private fun DeckDetailScreenPreview() {
                 dueCount = 2,
                 isLoading = false,
             ),
-            onNavigateUp = {}, onAddCard = {}, onCardClick = {}, onStudy = {}, onDeleteCard = {}, onUndoDelete = {},
+            onNavigateUp = {}, onAddCard = {}, onCardClick = {}, onStudy = {}, onStudyAll = {},
+            onDeleteCard = {}, onUndoDelete = {},
         )
     }
 }

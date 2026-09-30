@@ -1,6 +1,7 @@
 package br.dia23.nodo.feature.flashcards.data
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
@@ -10,13 +11,15 @@ import java.util.UUID
  * `@Entity` diz ao Room: "esta classe é uma tabela". Cada propriedade vira uma coluna.
  * (Analogia com Python: é como um dataclass que também descreve a tabela SQL.)
  */
-@Entity(tableName = "decks")
+@Entity(tableName = "decks", indices = [Index("subjectId")])
 data class DeckEntity(
     // UUID em String (e não Int autoincrement): dois aparelhos offline nunca geram o mesmo id,
     // então dá para sincronizar com o Firestore depois sem conflito de chaves.
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val name: String,
     val description: String = "",
+    /** Matéria do deck (opcional). Liga os flashcards às provas e metas do Planner. Coluna nova na versão 4. */
+    val subjectId: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
     // Toda alteração deve atualizar este campo. Na sincronização, "vence" quem tiver o updatedAt maior.
     val updatedAt: Long = createdAt,

@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.dia23.nodo.R
+import br.dia23.nodo.core.subjects.SubjectEntity
+import br.dia23.nodo.core.ui.ColorDot
 import br.dia23.nodo.core.ui.TopLevelScreenInsets
 import br.dia23.nodo.feature.flashcards.data.DeckEntity
 import br.dia23.nodo.feature.flashcards.data.DeckWithStats
@@ -65,6 +67,7 @@ fun DeckListRoute(
         onDeleteClick = viewModel::onDeleteClick,
         onDismissDialog = viewModel::onDismissDialog,
         onSaveDeck = viewModel::onSaveDeck,
+        onCreateSubject = viewModel::onCreateSubject,
         onConfirmDelete = viewModel::onConfirmDelete,
     )
 }
@@ -78,7 +81,8 @@ fun DeckListScreen(
     onEditClick: (DeckEntity) -> Unit,
     onDeleteClick: (DeckEntity) -> Unit,
     onDismissDialog: () -> Unit,
-    onSaveDeck: (name: String, description: String) -> Unit,
+    onSaveDeck: (name: String, description: String, subjectId: String?) -> Unit,
+    onCreateSubject: (name: String, colorIndex: Int, onCreated: (String) -> Unit) -> Unit,
     onConfirmDelete: () -> Unit,
 ) {
     Scaffold(
@@ -97,7 +101,7 @@ fun DeckListScreen(
             when {
                 uiState.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 uiState.decks.isEmpty() -> EmptyState(Modifier.align(Alignment.Center))
-                else -> DeckList(uiState.decks, onDeckClick, onEditClick, onDeleteClick)
+                else -> DeckList(uiState.decks, uiState.subjects, onDeckClick, onEditClick, onDeleteClick)
             }
         }
     }
@@ -105,8 +109,13 @@ fun DeckListScreen(
     // Diálogos: aparecem por cima conforme o estado (a tela nunca "abre" nada por conta própria).
     when (val dialog = uiState.dialog) {
         DeckDialog.None -> Unit
-        DeckDialog.Create -> DeckEditDialog(deck = null, onDismiss = onDismissDialog, onSave = onSaveDeck)
-        is DeckDialog.Edit -> DeckEditDialog(deck = dialog.deck, onDismiss = onDismissDialog, onSave = onSaveDeck)
+        DeckDialog.Create, is DeckDialog.Edit -> DeckEditDialog(
+            deck = (dialog as? DeckDialog.Edit)?.deck,
+            subjects = uiState.subjects,
+            onDismiss = onDismissDialog,
+            onSave = onSaveDeck,
+            onCreateSubject = onCreateSubject,
+        )
         is DeckDialog.ConfirmDelete -> ConfirmDeleteDialog(
             deckName = dialog.deck.name,
             onConfirm = onConfirmDelete,
@@ -118,10 +127,12 @@ fun DeckListScreen(
 @Composable
 private fun DeckList(
     decks: List<DeckWithStats>,
+    subjects: List<SubjectEntity>,
     onDeckClick: (String) -> Unit,
     onEditClick: (DeckEntity) -> Unit,
     onDeleteClick: (DeckEntity) -> Unit,
 ) {
+    val subjectsById = subjects.associateBy { it.id }
     LazyColumn(
         // Espaço no fim para o botão "+" não cobrir o último item.
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
@@ -129,7 +140,7 @@ private fun DeckList(
     ) {
         // `key` deixa o Compose identificar cada item pelo id (animações e estado corretos ao reordenar).
         items(decks, key = { it.deck.id }) { item ->
-            DeckItem(item, onDeckClick, onEditClick, onDeleteClick)
+            DeckItem(item, item.deck.subjectId?.let(subjectsById::get), onDeckClick, onEditClick, onDeleteClick)
         }
     }
 }
@@ -137,6 +148,7 @@ private fun DeckList(
 @Composable
 private fun DeckItem(
     item: DeckWithStats,
+    subject: SubjectEntity?,
     onDeckClick: (String) -> Unit,
     onEditClick: (DeckEntity) -> Unit,
     onDeleteClick: (DeckEntity) -> Unit,
@@ -150,6 +162,16 @@ private fun DeckItem(
         ) {
             Column(Modifier.weight(1f)) {
                 Text(item.deck.name, style = MaterialTheme.typography.titleMedium)
+                if (subject != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
+                        ColorDot(subject.colorIndex)
+                        Text(
+                            subject.name,
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(start = 6.dp),
+                        )
+                    }
+                }
                 if (item.deck.description.isNotBlank()) {
                     Text(
                         item.deck.description,
@@ -234,7 +256,7 @@ private fun DeckListScreenPreview() {
                 isLoading = false,
             ),
             onDeckClick = {}, onAddClick = {}, onEditClick = {}, onDeleteClick = {},
-            onDismissDialog = {}, onSaveDeck = { _, _ -> }, onConfirmDelete = {},
+            onDismissDialog = {}, onSaveDeck = { _, _, _ -> }, onCreateSubject = { _, _, _ -> }, onConfirmDelete = {},
         )
     }
 }
@@ -246,7 +268,7 @@ private fun DeckListScreenEmptyPreview() {
         DeckListScreen(
             uiState = DeckListUiState(isLoading = false),
             onDeckClick = {}, onAddClick = {}, onEditClick = {}, onDeleteClick = {},
-            onDismissDialog = {}, onSaveDeck = { _, _ -> }, onConfirmDelete = {},
+            onDismissDialog = {}, onSaveDeck = { _, _, _ -> }, onCreateSubject = { _, _, _ -> }, onConfirmDelete = {},
         )
     }
 }

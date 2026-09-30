@@ -5,16 +5,19 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import br.dia23.nodo.core.subjects.SubjectDao
+import br.dia23.nodo.core.subjects.SubjectEntity
 import br.dia23.nodo.feature.flashcards.data.CardDao
 import br.dia23.nodo.feature.flashcards.data.CardEntity
 import br.dia23.nodo.feature.flashcards.data.DeckDao
 import br.dia23.nodo.feature.flashcards.data.DeckEntity
 import br.dia23.nodo.feature.flashcards.data.ReviewDao
 import br.dia23.nodo.feature.flashcards.data.ReviewLogEntity
+import br.dia23.nodo.feature.planner.data.PlannerDao
+import br.dia23.nodo.feature.planner.data.PlannerEventEntity
+import br.dia23.nodo.feature.planner.data.WeeklyGoalEntity
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionDao
 import br.dia23.nodo.feature.pomodoro.data.FocusSessionEntity
-import br.dia23.nodo.feature.pomodoro.data.SubjectDao
-import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
 
 /**
  * Ponto único de entrada do banco. Novas fases (sessões de Pomodoro, metas...)
@@ -24,6 +27,7 @@ import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
  * 1 - decks e cards
  * 2 - review_logs (histórico do modo estudo)
  * 3 - subjects e focus_sessions (Pomodoro)
+ * 4 - weekly_goals, planner_events (Planner) e decks.subjectId
  */
 @Database(
     entities = [
@@ -32,13 +36,20 @@ import br.dia23.nodo.feature.pomodoro.data.SubjectEntity
         ReviewLogEntity::class,
         SubjectEntity::class,
         FocusSessionEntity::class,
+        WeeklyGoalEntity::class,
+        PlannerEventEntity::class,
     ],
-    version = 3,
+    version = 4,
     // Exporta o schema em JSON (app/schemas): o Room compara as versões para gerar as AutoMigrations.
     exportSchema = true,
     // Migração 1 -> 2 gerada pelo Room: ele compara 1.json com 2.json e vê que só entrou uma tabela nova.
     // Sem migração, o app travaria ao abrir para quem já tem o banco na versão 1.
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
+        // 3 -> 4: duas tabelas novas e uma coluna nova (decks.subjectId, que pode ser nula).
+        AutoMigration(from = 3, to = 4),
+    ],
 )
 abstract class NodoDatabase : RoomDatabase() {
     abstract fun deckDao(): DeckDao
@@ -46,6 +57,7 @@ abstract class NodoDatabase : RoomDatabase() {
     abstract fun reviewDao(): ReviewDao
     abstract fun subjectDao(): SubjectDao
     abstract fun focusSessionDao(): FocusSessionDao
+    abstract fun plannerDao(): PlannerDao
 
     companion object {
         fun create(context: Context): NodoDatabase =

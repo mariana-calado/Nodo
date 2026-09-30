@@ -37,16 +37,17 @@ class FlashcardRepository @Inject constructor(
 
     fun observeDeck(deckId: String): Flow<DeckEntity?> = deckDao.observeById(deckId)
 
-    suspend fun createDeck(name: String, description: String) {
-        deckDao.upsert(DeckEntity(name = name.trim(), description = description.trim()))
+    suspend fun createDeck(name: String, description: String, subjectId: String?) {
+        deckDao.upsert(DeckEntity(name = name.trim(), description = description.trim(), subjectId = subjectId))
     }
 
-    suspend fun updateDeck(id: String, name: String, description: String) {
+    suspend fun updateDeck(id: String, name: String, description: String, subjectId: String?) {
         val current = deckDao.getById(id) ?: return
         deckDao.upsert(
             current.copy(
                 name = name.trim(),
                 description = description.trim(),
+                subjectId = subjectId,
                 // Toda edição atualiza updatedAt: é o que a sincronização usará para resolver conflitos.
                 updatedAt = System.currentTimeMillis(),
             ),
@@ -87,6 +88,12 @@ class FlashcardRepository @Inject constructor(
     /** Foto das cartas para revisar agora. Não é Flow: a sessão não deve mudar enquanto você estuda. */
     suspend fun getDueCards(deckId: String): List<CardEntity> =
         cardDao.getDueCards(deckId, dueUntil = endOfToday())
+
+    /**
+     * "Revisar todas": inclui as cartas que ainda não venceram (útil antes de uma prova).
+     * As respostas passam pelo SM-2 normalmente, então o agendamento dessas cartas também é atualizado.
+     */
+    suspend fun getAllCards(deckId: String): List<CardEntity> = cardDao.getAllActive(deckId)
 
     /**
      * Aplica a resposta: o SM-2 calcula o novo estado da carta e gravamos carta + histórico juntos.

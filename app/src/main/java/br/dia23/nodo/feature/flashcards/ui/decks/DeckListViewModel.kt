@@ -2,6 +2,8 @@ package br.dia23.nodo.feature.flashcards.ui.decks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.dia23.nodo.core.subjects.SubjectEntity
+import br.dia23.nodo.core.subjects.SubjectRepository
 import br.dia23.nodo.feature.flashcards.data.DeckEntity
 import br.dia23.nodo.feature.flashcards.data.DeckWithStats
 import br.dia23.nodo.feature.flashcards.data.FlashcardRepository
@@ -29,6 +31,7 @@ sealed interface DeckDialog {
  */
 data class DeckListUiState(
     val decks: List<DeckWithStats> = emptyList(),
+    val subjects: List<SubjectEntity> = emptyList(),
     /** true até o Room entregar a primeira lista; evita piscar "nenhum deck" na abertura. */
     val isLoading: Boolean = true,
     val dialog: DeckDialog = DeckDialog.None,
@@ -37,6 +40,7 @@ data class DeckListUiState(
 @HiltViewModel // o Hilt cria este ViewModel e injeta o repositório no construtor
 class DeckListViewModel @Inject constructor(
     private val repository: FlashcardRepository,
+    private val subjectRepository: SubjectRepository,
 ) : ViewModel() {
 
     private val dialog = MutableStateFlow<DeckDialog>(DeckDialog.None)
@@ -47,8 +51,12 @@ class DeckListViewModel @Inject constructor(
      * `WhileSubscribed(5_000)`: para de consultar o banco 5s depois que a tela sai de vista,
      * mas não reinicia numa rotação (que leva menos que isso).
      */
-    val uiState: StateFlow<DeckListUiState> = combine(repository.observeDecks(), dialog) { decks, dialog ->
-        DeckListUiState(decks = decks, isLoading = false, dialog = dialog)
+    val uiState: StateFlow<DeckListUiState> = combine(
+        repository.observeDecks(),
+        subjectRepository.observeSubjects(),
+        dialog,
+    ) { decks, subjects, dialog ->
+        DeckListUiState(decks = decks, subjects = subjects, isLoading = false, dialog = dialog)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -65,18 +73,24 @@ class DeckListViewModel @Inject constructor(
 
     fun onDismissDialog() = dialog.update { DeckDialog.None }
 
-    fun onSaveDeck(name: String, description: String) {
+    fun onSaveDeck(name: String, description: String, subjectId: String?) {
         // A tela já desabilita o botão com nome vazio, mas a regra também vive aqui.
         if (name.isBlank()) return
         val current = dialog.value
         dialog.update { DeckDialog.None }
         viewModelScope.launch {
             when (current) {
-                is DeckDialog.Edit -> repository.updateDeck(current.deck.id, name, description)
-                is DeckDialog.Create -> repository.createDeck(name, description)
+                is DeckDialog.Edit -> repository.updateDeck(current.deck.id, name, description, subjectId)
+                is DeckDialog.Create -> repository.createDeck(name, description, subjectId)
                 else -> Unit
             }
         }
+    }
+
+    /** Cria a matéria e devolve o id por callback, para o diálogo já deixá-la selecionada. */
+    fun onCreateSubject(name: String, colorIndex: Int, onCreated: (String) -> Unit) {
+        if (name.isBlank()) return
+        viewModelScope.launch { onCreated(subjectRepository.createSubject(name, colorIndex).id) }
     }
 
     fun onConfirmDelete() {

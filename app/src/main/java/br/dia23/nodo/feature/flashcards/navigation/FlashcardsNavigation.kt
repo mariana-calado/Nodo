@@ -25,8 +25,9 @@ data class DeckDetailDestination(val deckId: String)
 @Serializable
 data class CardEditDestination(val deckId: String, val cardId: String? = null)
 
+/** reviewAll = true: "Revisar todas" (inclui cartas que ainda não venceram). */
 @Serializable
-data class StudyDestination(val deckId: String)
+data class StudyDestination(val deckId: String, val reviewAll: Boolean = false)
 
 /**
  * Registra as telas de flashcards no NavHost. Cada funcionalidade tem a sua função assim
@@ -46,6 +47,7 @@ fun NavGraphBuilder.flashcardsGraph(navController: NavController) {
             onAddCard = { navController.navigate(CardEditDestination(deckId)) },
             onCardClick = { cardId -> navController.navigate(CardEditDestination(deckId, cardId)) },
             onStudy = { navController.navigate(StudyDestination(deckId)) },
+            onStudyAll = { navController.navigate(StudyDestination(deckId, reviewAll = true)) },
         )
     }
     composable<CardEditDestination> {

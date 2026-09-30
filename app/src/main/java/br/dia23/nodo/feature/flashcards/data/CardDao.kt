@@ -24,9 +24,19 @@ interface CardDao {
     @Query("SELECT COUNT(*) FROM cards WHERE deckId = :deckId AND isDeleted = 0 AND dueAt <= :dueUntil")
     fun observeDueCountByDeck(deckId: String, dueUntil: Long): Flow<Int>
 
-    /** Quantas cartas estão devidas em todos os decks (o Planner vai usar isso na fase 3). */
-    @Query("SELECT COUNT(*) FROM cards WHERE isDeleted = 0 AND dueAt <= :dueUntil")
-    fun observeDueCount(dueUntil: Long): Flow<Int>
+    /** "Revisar todas": todas as cartas ativas do deck, as que vencem primeiro na frente. */
+    @Query("SELECT * FROM cards WHERE deckId = :deckId AND isDeleted = 0 ORDER BY dueAt, createdAt")
+    suspend fun getAllActive(deckId: String): List<CardEntity>
+
+    /**
+     * Para o Planner: só o vencimento de cada carta ativa e a matéria do seu deck.
+     * Projeção leve: não carrega frente/verso de milhares de cartas à toa.
+     */
+    @Query(
+        "SELECT c.dueAt AS dueAt, d.subjectId AS subjectId FROM cards c " +
+            "INNER JOIN decks d ON d.id = c.deckId WHERE c.isDeleted = 0 AND d.isDeleted = 0",
+    )
+    fun observeDueInfo(): Flow<List<CardDueInfo>>
 
     @Upsert
     suspend fun upsert(card: CardEntity)
@@ -38,3 +48,6 @@ interface CardDao {
     @Query("UPDATE cards SET isDeleted = 0, updatedAt = :now WHERE id = :id")
     suspend fun restore(id: String, now: Long = System.currentTimeMillis())
 }
+
+/** Resultado da consulta do Planner (não é tabela: só o formato das colunas do SELECT). */
+data class CardDueInfo(val dueAt: Long, val subjectId: String?)
