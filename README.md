@@ -14,6 +14,7 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
   - [x] Modelagem Room: `Deck` e `Card`
   - [x] Tela de decks: criar, listar, editar e excluir (MVVM + Hilt + Navigation)
   - [x] Cartas do deck: criar, editar e excluir com "Desfazer"
+  - [x] Modo estudo com repetição espaçada (SM-2) e histórico de revisões
 - [ ] Fase 2 — Pomodoro + estatísticas
 - [ ] Fase 3 — Planner e lembretes
 - [ ] Fase 4 — Modo quiz
@@ -27,6 +28,8 @@ Kotlin · Jetpack Compose · Material 3 · MVVM · Room · Navigation Compose ·
 - Um pacote por funcionalidade (`feature/flashcards`, ...) e código compartilhado em `core/`.
 - MVVM com fluxo unidirecional: a tela desenha um `UiState` (StateFlow) e só envia eventos ao ViewModel.
 - Injeção de dependências com Hilt; o Repository é a única porta de entrada para os dados.
+- Regras de negócio em Kotlin puro (`domain/`: algoritmo SM-2 e fila da sessão de estudo), cobertas por testes unitários JVM que rodam sem emulador.
+- Migrações do banco versionadas: o schema de cada versão fica em `app/schemas/` e um teste instrumentado garante que a atualização preserva os dados.
 
 ## Créditos
 
