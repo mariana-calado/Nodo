@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +48,7 @@ fun DeckDetailRoute(
     onNavigateUp: () -> Unit,
     onAddCard: () -> Unit,
     onCardClick: (cardId: String) -> Unit,
+    onStudy: () -> Unit,
     viewModel: DeckDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,6 +58,7 @@ fun DeckDetailRoute(
         onNavigateUp = onNavigateUp,
         onAddCard = onAddCard,
         onCardClick = onCardClick,
+        onStudy = onStudy,
         onDeleteCard = viewModel::onDeleteCard,
         onUndoDelete = viewModel::onUndoDelete,
     )
@@ -68,6 +71,7 @@ fun DeckDetailScreen(
     onNavigateUp: () -> Unit,
     onAddCard: () -> Unit,
     onCardClick: (String) -> Unit,
+    onStudy: () -> Unit,
     onDeleteCard: (String) -> Unit,
     onUndoDelete: (String) -> Unit,
 ) {
@@ -118,7 +122,7 @@ fun DeckDetailScreen(
             when {
                 uiState.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 uiState.cards.isEmpty() -> EmptyState(Modifier.align(Alignment.Center))
-                else -> CardList(uiState.cards, onCardClick, deleteWithUndo)
+                else -> CardList(uiState.cards, uiState.dueCount, onCardClick, onStudy, deleteWithUndo)
             }
         }
     }
@@ -127,13 +131,27 @@ fun DeckDetailScreen(
 @Composable
 private fun CardList(
     cards: List<CardEntity>,
+    dueCount: Int,
     onCardClick: (String) -> Unit,
+    onStudy: () -> Unit,
     onDeleteCard: (String) -> Unit,
 ) {
     LazyColumn(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Primeiro item da lista: o botão rola junto com as cartas.
+        item(key = "study") {
+            Button(onClick = onStudy, enabled = dueCount > 0, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    if (dueCount > 0) {
+                        stringResource(R.string.study_start, dueCount)
+                    } else {
+                        stringResource(R.string.study_nothing_due)
+                    },
+                )
+            }
+        }
         items(cards, key = { it.id }) { card ->
             CardItem(card, onClick = { onCardClick(card.id) }, onDelete = { onDeleteCard(card.id) })
         }
@@ -194,9 +212,10 @@ private fun DeckDetailScreenPreview() {
                     CardEntity(deckId = "1", front = "cat", back = "gato"),
                     CardEntity(deckId = "1", front = "to look forward to", back = "estar ansioso por algo (bom)"),
                 ),
+                dueCount = 2,
                 isLoading = false,
             ),
-            onNavigateUp = {}, onAddCard = {}, onCardClick = {}, onDeleteCard = {}, onUndoDelete = {},
+            onNavigateUp = {}, onAddCard = {}, onCardClick = {}, onStudy = {}, onDeleteCard = {}, onUndoDelete = {},
         )
     }
 }

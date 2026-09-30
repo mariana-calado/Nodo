@@ -6,8 +6,12 @@
     <string name="decks_add">Novo deck</string>
     <string name="decks_empty_title">Nenhum deck ainda</string>
     <string name="decks_empty_hint">Toque em + para criar o primeiro.</string>
-    <string name="deck_cards_one">1 carta</string>
-    <string name="deck_cards_other">%d cartas</string>
+    <!-- plurals: o Android escolhe a frase certa pela quantidade (1 carta / 2 cartas). -->
+    <plurals name="deck_card_count">
+        <item quantity="one">%d carta</item>
+        <item quantity="many">%d cartas</item>
+        <item quantity="other">%d cartas</item>
+    </plurals>
     <string name="deck_due">%d para revisar</string>
     <string name="deck_options">Opções do deck</string>
     <string name="deck_rename">Editar</string>
@@ -36,6 +40,27 @@
     <string name="card_front">Frente</string>
     <string name="card_back">Verso</string>
     <string name="card_save_and_new">Salvar e nova</string>
+
+    <!-- Modo estudo -->
+    <string name="study_start">Estudar (%1$d)</string>
+    <string name="study_nothing_due">Nada para revisar hoje</string>
+    <string name="study_empty_hint">Volte amanhã ou adicione novas cartas.</string>
+    <string name="study_show_answer">Mostrar resposta</string>
+    <string name="study_progress">%1$d de %2$d</string>
+    <string name="study_finished_title">Sessão concluída</string>
+    <string name="study_back_to_deck">Voltar ao deck</string>
+    <plurals name="study_reviewed_count">
+        <item quantity="one">%d carta revisada</item>
+        <item quantity="many">%d cartas revisadas</item>
+        <item quantity="other">%d cartas revisadas</item>
+    </plurals>
+    <string name="grade_again">Errei</string>
+    <string name="grade_hard">Difícil</string>
+    <string name="grade_good">Bom</string>
+    <string name="grade_easy">Fácil</string>
+    <!-- Próximo intervalo mostrado no botão: "6 d" (dias) ou "2 m" (meses). -->
+    <string name="interval_days">%1$d d</string>
+    <string name="interval_months">%1$d m</string>
 
     <string name="action_cancel">Cancelar</string>
     <string name="action_save">Salvar</string>

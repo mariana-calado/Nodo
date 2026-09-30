@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -154,11 +155,8 @@ private fun DeckItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                val cards = if (item.cardCount == 1) {
-                    stringResource(R.string.deck_cards_one)
-                } else {
-                    stringResource(R.string.deck_cards_other, item.cardCount)
-                }
+                // 1º argumento escolhe singular/plural; o 2º preenche o %d.
+                val cards = pluralStringResource(R.plurals.deck_card_count, item.cardCount, item.cardCount)
                 val summary = if (item.dueCount > 0) {
                     "$cards · ${stringResource(R.string.deck_due, item.dueCount)}"
                 } else {

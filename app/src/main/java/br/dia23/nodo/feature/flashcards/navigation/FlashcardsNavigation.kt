@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import br.dia23.nodo.feature.flashcards.ui.cardedit.CardEditRoute
 import br.dia23.nodo.feature.flashcards.ui.deckdetail.DeckDetailRoute
 import br.dia23.nodo.feature.flashcards.ui.decks.DeckListRoute
+import br.dia23.nodo.feature.flashcards.ui.study.StudyRoute
 import kotlinx.serialization.Serializable
 
 /*
@@ -23,6 +24,9 @@ data class DeckDetailDestination(val deckId: String)
 /** cardId == null significa "criar carta nova"; com valor, "editar esta carta". */
 @Serializable
 data class CardEditDestination(val deckId: String, val cardId: String? = null)
+
+@Serializable
+data class StudyDestination(val deckId: String)
 
 /**
  * Registra as telas de flashcards no NavHost. Cada funcionalidade tem a sua função assim
@@ -41,9 +45,13 @@ fun NavGraphBuilder.flashcardsGraph(navController: NavController) {
             onNavigateUp = { navController.navigateUp() },
             onAddCard = { navController.navigate(CardEditDestination(deckId)) },
             onCardClick = { cardId -> navController.navigate(CardEditDestination(deckId, cardId)) },
+            onStudy = { navController.navigate(StudyDestination(deckId)) },
         )
     }
     composable<CardEditDestination> {
         CardEditRoute(onNavigateUp = { navController.navigateUp() })
+    }
+    composable<StudyDestination> {
+        StudyRoute(onNavigateUp = { navController.navigateUp() })
     }
 }

@@ -18,6 +18,8 @@ import javax.inject.Inject
 data class DeckDetailUiState(
     val deckName: String = "",
     val cards: List<CardEntity> = emptyList(),
+    /** Cartas para revisar hoje: o número do botão "Estudar". */
+    val dueCount: Int = 0,
     val isLoading: Boolean = true,
 )
 
@@ -34,8 +36,9 @@ class DeckDetailViewModel @Inject constructor(
     val uiState: StateFlow<DeckDetailUiState> = combine(
         repository.observeDeck(deckId),
         repository.observeCards(deckId),
-    ) { deck, cards ->
-        DeckDetailUiState(deckName = deck?.name.orEmpty(), cards = cards, isLoading = false)
+        repository.observeDueCount(deckId),
+    ) { deck, cards, dueCount ->
+        DeckDetailUiState(deckName = deck?.name.orEmpty(), cards = cards, dueCount = dueCount, isLoading = false)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
