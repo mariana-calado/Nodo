@@ -70,6 +70,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     // hiltViewModel() para obter ViewModels do Hilt dentro de composables.
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    // DataStore: armazenamento chave-valor assíncrono (substituto moderno do SharedPreferences).
+    implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
