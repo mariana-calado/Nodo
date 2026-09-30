@@ -51,6 +51,50 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migracao2Para3PreservaHistoricoECriaTabelasDoPomodoro() {
+        helper.createDatabase(TEST_DB, 2).apply {
+            execSQL(
+                "INSERT INTO decks (id, name, description, createdAt, updatedAt, isDeleted) " +
+                    "VALUES ('d1', 'Inglês', '', 1, 1, 0)",
+            )
+            execSQL(
+                "INSERT INTO cards (id, deckId, front, back, easeFactor, intervalDays, repetitions, dueAt, " +
+                    "createdAt, updatedAt, isDeleted) VALUES ('c1', 'd1', 'cat', 'gato', 2.5, 1, 1, 1, 1, 1, 0)",
+            )
+            execSQL(
+                "INSERT INTO review_logs (id, cardId, deckId, grade, reviewedAt, updatedAt, isDeleted) " +
+                    "VALUES ('r1', 'c1', 'd1', 'GOOD', 5, 5, 0)",
+            )
+            close()
+        }
+
+        val db = helper.runMigrationsAndValidate(TEST_DB, 3, true)
+
+        db.query("SELECT grade FROM review_logs WHERE id = 'r1'").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals("GOOD", cursor.getString(0)) // o histórico do modo estudo sobreviveu
+        }
+        // As tabelas novas existem e aceitam dados (inclusive sessão sem matéria).
+        db.execSQL("INSERT INTO subjects (id, name, colorIndex, createdAt, updatedAt, isDeleted) VALUES ('s1', 'Cálculo', 0, 1, 1, 0)")
+        db.execSQL(
+            "INSERT INTO focus_sessions (id, subjectId, startedAt, endedAt, focusedMs, plannedMs, completed, " +
+                "updatedAt, isDeleted) VALUES ('f1', NULL, 1, 2, 1500000, 1500000, 1, 2, 0)",
+        )
+        db.query("SELECT COUNT(*) FROM focus_sessions").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals(1, cursor.getInt(0))
+        }
+    }
+
+    @Test
+    fun migracaoDaVersao1DiretoParaA3() {
+        // Quem ficou sem atualizar o app desde a versão 1 passa pelas duas migrações em sequência.
+        helper.createDatabase(TEST_DB, 1).close()
+
+        helper.runMigrationsAndValidate(TEST_DB, 3, true).close()
+    }
+
     private companion object {
         const val TEST_DB = "migration-test"
     }

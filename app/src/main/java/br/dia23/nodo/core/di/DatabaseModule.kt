@@ -5,6 +5,8 @@ import br.dia23.nodo.core.database.NodoDatabase
 import br.dia23.nodo.feature.flashcards.data.CardDao
 import br.dia23.nodo.feature.flashcards.data.DeckDao
 import br.dia23.nodo.feature.flashcards.data.ReviewDao
+import br.dia23.nodo.feature.pomodoro.data.FocusSessionDao
+import br.dia23.nodo.feature.pomodoro.data.SubjectDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,4 +37,10 @@ object DatabaseModule {
 
     @Provides
     fun provideReviewDao(database: NodoDatabase): ReviewDao = database.reviewDao()
+
+    @Provides
+    fun provideSubjectDao(database: NodoDatabase): SubjectDao = database.subjectDao()
+
+    @Provides
+    fun provideFocusSessionDao(database: NodoDatabase): FocusSessionDao = database.focusSessionDao()
 }
